@@ -1,0 +1,88 @@
+# Python Coding Style 指南
+
+## 核心原則
+
+Code should be self-documenting through excellent naming and clear structure. 好的命名不需要註解
+
+## 關鍵規則
+
+### Absolute Imports Only
+必須使用 absolute imports，清楚表達模組層次
+
+```python
+# ✅ Good
+from tdd_labs.services.user_service import UserService
+from tdd_labs.models.user import User
+
+# ❌ Bad
+from .user_service import UserService
+from ..models.user import User
+```
+
+### Screaming Architecture Names
+檔案和變數命名要明確表達業務意圖和目的
+
+```python
+# ✅ Files scream their purpose
+# auth_service.py
+# user_registration.py  
+# email_validator.py
+# payment_processor.py
+
+# ✅ Variables scream their purpose
+def register_new_user(email: str, password: str) -> RegisteredUser:
+    user_email_validator = EmailValidator()
+    password_hasher = PasswordHasher()
+    user_repository = UserRepository()
+    
+    validated_email: ValidatedEmail = user_email_validator.validate(email)
+    hashed_password: HashedPassword = password_hasher.hash(password)
+    
+    return user_repository.save_new_user(validated_email, hashed_password)
+
+# ❌ Poor - purpose unclear
+def process(data: str, key: str) -> User:
+    v = Validator()
+    h = Hasher()
+    r = Repo()
+    pass
+```
+
+### Type Hints Mandatory
+所有 functions 和 variables 必須有 type hints
+
+```python
+def create_user_account(email: str, password: str) -> UserAccount:
+    user_id: str = generate_user_id()
+    created_at: datetime = datetime.utcnow()
+    return UserAccount(user_id, email, password, created_at)
+```
+
+### Descriptive Data Structures
+使用具描述性的 data structures，避免 primitive obsession
+
+```python
+# ✅ Good - Clear purpose and structure
+@dataclass
+class UserRegistrationRequest:
+    email_address: str
+    raw_password: str
+    full_name: str
+    preferred_language: str
+
+class EmailValidationResult:
+    def __init__(self, is_valid: bool, error_message: str = ""):
+        self.is_valid = is_valid
+        self.error_message = error_message
+
+# ❌ Bad - Unclear purpose
+def register_user(data: dict) -> dict:  # What's in these dicts?
+    pass
+```
+
+## Key Principles
+
+1. Absolute imports only - Clear module boundaries
+2. Screaming architecture - Names reveal intent and purpose
+3. Type hints mandatory - Contract clarity  
+4. Descriptive structures - Avoid primitive obsession
