@@ -9,4 +9,6 @@ def foo_bar_bar(number: int) -> str:
     # 最極簡實作 - 簡單條件判斷
     if number == 3:
         return "Foo"
+    if number == 5:
+        return "Barbar"
     return "1"
