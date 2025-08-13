@@ -18,3 +18,10 @@ def test_should_return_barbar_when_input_is_5():
     
     result = foo_bar_bar(5)
     assert result == "Barbar"
+
+def test_should_return_foobarbar_when_input_is_15():
+    """複合規則：同時被 3 和 5 整除應該回傳 FooBarbar"""
+    from tdd_labs.foobarbar import foo_bar_bar
+    
+    result = foo_bar_bar(15)
+    assert result == "FooBarbar"
