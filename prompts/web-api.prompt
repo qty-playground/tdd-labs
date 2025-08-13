@@ -1,0 +1,108 @@
+# FastAPI 模組化架構提示詞
+
+建立完全模組化的 FastAPI 應用程式架構，遵循以下原則：
+
+## 核心原則
+
+1. **main.py 絕對不包含實作內容**
+   - main.py 只負責 FastAPI 應用程式配置和路由註冊
+   - 所有端點都必須透過 `app.include_router()` 引入
+   - 使用 delegation 方式啟用所有功能
+   - 不允許在 main.py 中直接定義任何 @app.get() 或其他路由裝飾器
+
+2. **Router 模組化架構**
+   - 所有端點都必須在獨立的 router 模組中實作
+   - 每個功能領域有自己的 router 檔案（如 health.py, root.py）
+   - Router 模組位於 `routers/` 套件中
+   - 每個 router 都要有完整的註解和文檔
+
+3. **完整註解要求**
+   - 每個 router 模組都要有詳細的模組級別註解
+   - 每個端點都要有完整的 OpenAPI 註解：
+     - `summary`: 簡短描述
+     - `description`: 詳細說明
+     - `response_description`: 響應說明
+     - `responses`: 詳細響應範例
+   - 每個 Pydantic 模型都要有完整的欄位註解和範例
+   - 每個函數都要有詳細的 docstring
+
+4. **專案結構**
+   ```
+   project/
+   ├── main.py                 # FastAPI 應用配置，純粹引入路由
+   ├── routers/
+   │   ├── __init__.py
+   │   ├── root.py            # 根路徑端點
+   │   ├── health.py          # 健康檢查端點
+   │   └── [other_routers].py # 其他功能模組
+   └── [other_packages]/
+   ```
+
+5. **實作範例模式**
+
+   **main.py 標準格式：**
+   ```python
+   """
+   主應用程式註解 - 描述整體架構和設計理念
+   """
+   from fastapi import FastAPI
+   from .routers import health, root, other_router
+   
+   # 應用程式配置
+   app = FastAPI(...)
+   
+   # 純粹的路由註冊，不包含任何業務邏輯
+   app.include_router(root.router)
+   app.include_router(health.router)
+   app.include_router(other_router.router)
+   ```
+
+   **Router 模組標準格式：**
+   ```python
+   """
+   Router 模組詳細註解 - 說明模組功能和設計目的
+   """
+   from fastapi import APIRouter, status
+   from pydantic import BaseModel, Field
+   
+   router = APIRouter(
+       prefix="/path",
+       tags=["Tag Name"],
+       responses={...}
+   )
+   
+   class ResponseModel(BaseModel):
+       """完整的模型註解"""
+       field: str = Field(..., description="詳細說明", example="範例")
+   
+   @router.get(
+       "/endpoint",
+       response_model=ResponseModel,
+       status_code=status.HTTP_200_OK,
+       summary="端點簡述",
+       description="詳細功能說明",
+       response_description="響應說明",
+       responses={...}  # 詳細響應範例
+   )
+   async def endpoint_function():
+       """
+       完整的函數註解
+       - 功能說明
+       - 參數說明
+       - 返回值說明
+       """
+       return ResponseModel(...)
+   ```
+
+## 實作檢查清單
+
+- [ ] main.py 不包含任何 @app.get()、@app.post() 等路由裝飾器
+- [ ] 所有端點都在獨立的 router 模組中實作
+- [ ] 每個 router 都有完整的模組級別註解
+- [ ] 每個端點都有完整的 OpenAPI 註解
+- [ ] 每個 Pydantic 模型都有詳細的欄位註解
+- [ ] 所有函數都有完整的 docstring
+- [ ] 使用 app.include_router() 註冊所有路由
+- [ ] Router 模組遵循一致的命名和結構模式
+
+這個架構確保了程式碼的可維護性、可測試性和可擴展性，同時提供了完整的 API 文檔。
