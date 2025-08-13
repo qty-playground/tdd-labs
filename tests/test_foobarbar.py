@@ -26,3 +26,11 @@ def test_should_return_barbar_for_multiples_of_5():
     """
     assert foo_bar_bar(5) == "Barbar"
     assert foo_bar_bar(10) == "Barbar"
+
+
+def test_should_return_foobarbar_for_multiples_of_3_and_5():
+    """
+    測試複合規則：當數字同時是 3 和 5 的倍數時，應回傳 "FooBarbar"
+    """
+    assert foo_bar_bar(15) == "FooBarbar"
+    assert foo_bar_bar(30) == "FooBarbar"
