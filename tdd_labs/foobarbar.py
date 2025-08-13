@@ -10,9 +10,9 @@ def foo_bar_bar(number: int) -> str:
     - 同時被3和5整除: "FooBarbar"
     - 其他: 數字的字串形式
     """
-    if number % 3 == 0 and number % 5 == 0:
+    if number % 15 == 0:
         return "FooBarbar"
-    if number % 3 == 0:
+    elif number % 3 == 0:
         return "Foo"
     elif number % 5 == 0:
         return "Barbar"
