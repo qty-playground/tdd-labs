@@ -32,6 +32,10 @@ def test_should_capture_new_business_rule():
 
 ### 2. Test Quality Requirements
 - **Descriptive Names**: 測試名稱要說明 business rule
+  - ✅ `test_should_reject_invalid_email_format`
+  - ✅ `test_should_require_minimum_password_length`
+  - ❌ `test_validation`
+  - ❌ `test_user`
 - **Single Rule**: 一個測試只驗證一個規則
 - **Clear Intent**: 明確表達預期行為
 - **Minimal Setup**: 最少的測試設置
@@ -54,9 +58,10 @@ with pytest.raises(ValidationError):
 
 ### ✅ Phase Complete When:
 1. **Test is written** - 新測試已寫完
-2. **Test fails correctly** - 測試因為正確的原因失敗
-3. **Test is focused** - 只測試一個 business rule
-4. **Imports are minimal** - 只 import 必要的東西
+2. **Test runs and fails** - 執行 `pytest` 確認測試失敗
+3. **Test fails correctly** - 測試因為正確的原因失敗（NotImplementedError, ImportError, etc）
+4. **Test is focused** - 只測試一個 business rule
+5. **Imports are minimal** - 只 import 必要的東西
 
 ### 📋 Red Phase Checklist:
 - [ ] 測試寫在正確的 `tests/` 目錄下

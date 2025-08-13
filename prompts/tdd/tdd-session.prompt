@@ -38,6 +38,7 @@
 現在進入 RED PHASE
 使用 @prompts/tdd/red-phase.prompt
 目標：為新的 business rule 寫失敗測試
+執行：pytest tests/ -v 確認測試失敗
 ```
 
 ### 啟動 Green Phase  
@@ -45,6 +46,7 @@
 現在進入 GREEN PHASE
 使用 @prompts/tdd/green-phase.prompt  
 目標：最簡實作讓測試通過
+執行：pytest tests/ -v 確認測試通過
 ```
 
 ### 啟動 Refactor Phase
@@ -52,6 +54,7 @@
 現在進入 REFACTOR PHASE
 使用 @prompts/tdd/refactor-phase.prompt
 目標：改善程式碼品質，保持測試通過
+執行：pytest tests/ -v 頻繁確認測試仍通過
 ```
 
 ### 等待新規則

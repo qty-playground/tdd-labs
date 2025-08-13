@@ -24,6 +24,10 @@ prompts/
 ```bash
 # 首次設置開發環境
 ./setup-dev.sh
+
+# 確認測試環境正常
+pytest --version
+pytest tests/ -v
 ```
 
 ### 2. 開發前準備
@@ -141,6 +145,34 @@ prompts/
 - 小步驟進行，頻繁確認
 - 遵守 prompt 中的檔案修改限制
 - 保持各階段目標的純粹性
+
+## 常用測試命令
+
+```bash
+# 執行所有測試
+pytest tests/
+
+# 執行特定測試檔案
+pytest tests/services/user_service_test.py
+
+# 執行特定測試
+pytest tests/services/user_service_test.py::test_should_authenticate_user
+
+# 顯示詳細輸出
+pytest tests/ -v
+
+# 顯示 print 輸出
+pytest tests/ -s
+
+# 測試覆蓋率
+pytest tests/ --cov=tdd_labs --cov-report=term-missing
+
+# 只執行失敗的測試
+pytest tests/ --lf
+
+# 執行測試並在第一個失敗停止
+pytest tests/ -x
+```
 
 ---
 
