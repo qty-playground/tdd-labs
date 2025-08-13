@@ -11,3 +11,10 @@ def test_should_return_foo_when_input_is_3():
     
     result = foo_bar_bar(3)
     assert result == "Foo"
+
+def test_should_return_barbar_when_input_is_5():
+    """Barbar 規則：能被 5 整除應該回傳 Barbar"""
+    from tdd_labs.foobarbar import foo_bar_bar
+    
+    result = foo_bar_bar(5)
+    assert result == "Barbar"
