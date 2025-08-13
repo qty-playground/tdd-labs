@@ -1,0 +1,90 @@
+# RED PHASE - Write Failing Tests
+
+## 🔴 RED PHASE ACTIVE
+
+**目標：為新的 business rule 寫一個失敗的測試**
+
+## Strict File Modification Rules
+
+### ✅ ALLOWED - 只能修改這些檔案：
+- `tests/` 目錄下的任何 `*_test.py` 檔案
+- 新增 test imports 和 test utilities
+- 修改 test fixtures 和 test data
+
+### ❌ FORBIDDEN - 絕對不可修改：
+- `tdd_labs/` 目錄下的任何實作檔案
+- `main.py`, `__init__.py` 等實作相關檔案  
+- 任何非測試的程式碼
+
+## Red Phase Objectives
+
+### 1. Write One Failing Test
+```python
+def test_should_capture_new_business_rule():
+    """測試名稱要清楚描述 business rule"""
+    # Arrange - 準備測試資料
+    service = TargetService()
+    
+    # Act & Assert - 執行並驗證預期失敗
+    with pytest.raises(NotImplementedError):
+        service.new_business_rule_method()
+```
+
+### 2. Test Quality Requirements
+- **Descriptive Names**: 測試名稱要說明 business rule
+- **Single Rule**: 一個測試只驗證一個規則
+- **Clear Intent**: 明確表達預期行為
+- **Minimal Setup**: 最少的測試設置
+
+### 3. Expected Failure Types
+```python
+# Method not implemented yet
+with pytest.raises(NotImplementedError):
+    service.method_name()
+
+# Class doesn't exist yet  
+from tdd_labs.services.new_service import NewService  # ImportError expected
+
+# Validation rule not implemented
+with pytest.raises(ValidationError):
+    service.validate("invalid_input")
+```
+
+## Red Phase Completion Criteria
+
+### ✅ Phase Complete When:
+1. **Test is written** - 新測試已寫完
+2. **Test fails correctly** - 測試因為正確的原因失敗
+3. **Test is focused** - 只測試一個 business rule
+4. **Imports are minimal** - 只 import 必要的東西
+
+### 📋 Red Phase Checklist:
+- [ ] 測試寫在正確的 `tests/` 目錄下
+- [ ] 測試名稱清楚描述 business rule
+- [ ] 測試會失敗（且原因正確）
+- [ ] 沒有修改任何實作程式碼
+- [ ] 準備好進入 Green Phase
+
+## Transition to Green Phase
+
+Red Phase 完成後，輸出：
+```
+🔴 → 🟢 RED PHASE COMPLETE
+Failed test created: [test_method_name]
+Reason for failure: [NotImplementedError/ImportError/etc]
+Ready for GREEN PHASE
+```
+
+## Common Red Phase Mistakes to Avoid
+
+❌ **Don't**:
+- 修改實作程式碼
+- 寫多個規則在一個測試裡
+- 讓測試意外通過
+- 過度複雜的測試設置
+
+✅ **Do**:
+- 專注寫一個失敗測試
+- 清楚表達 business rule
+- 確認失敗原因正確
+- 保持測試簡單明確

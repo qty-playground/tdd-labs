@@ -1,0 +1,128 @@
+# GREEN PHASE - Minimal Implementation
+
+## 🟢 GREEN PHASE ACTIVE
+
+**目標：用最極簡的實作讓失敗的測試通過**
+
+## Strict File Modification Rules
+
+### ✅ ALLOWED - 只能修改這些檔案：
+- `tdd_labs/` 目錄下的實作檔案
+- `*.py` 實作檔案 (非 test 檔案)
+- `__init__.py` 檔案
+- 新增必要的實作模組
+
+### ❌ FORBIDDEN - 絕對不可修改：
+- `tests/` 目錄下的任何檔案
+- 任何 `*_test.py` 檔案
+- 測試相關的 fixtures 或 utilities
+
+## Green Phase Objectives
+
+### 1. Make Test Pass with Minimal Code
+```python
+# 最極簡實作 - hardcode 完全 OK
+class UserService:
+    def authenticate_user(self, email: str, password: str) -> User:
+        # 直接 hardcode，先讓測試通過
+        return User("hardcoded@example.com")
+        
+    def validate_email(self, email: str) -> bool:
+        # 最簡實作
+        return True
+        
+    def calculate_score(self, data: dict) -> int:
+        # 固定返回值也沒問題
+        return 42
+```
+
+### 2. Implementation Priorities
+1. **語法正確** > 邏輯正確
+2. **測試通過** > 程式碼優雅  
+3. **快速實作** > 完美設計
+4. **Hardcode** > 複雜邏輯
+
+### 3. Acceptable Green Phase Patterns
+```python
+# Pattern 1: 直接返回預期值
+def get_user_name(self) -> str:
+    return "John Doe"
+
+# Pattern 2: 簡單條件判斷
+def is_valid(self, value: str) -> bool:
+    if value == "expected_value":
+        return True
+    return False
+
+# Pattern 3: 拋出預期的例外
+def validate_input(self, data: str) -> None:
+    if data == "invalid":
+        raise ValidationError("Invalid input")
+
+# Pattern 4: 創建假物件
+def find_user(self, user_id: str) -> User:
+    return User(user_id, "fake_email@test.com", "fake_name")
+```
+
+## Green Phase Completion Criteria
+
+### ✅ Phase Complete When:
+1. **All tests pass** - 所有測試都是綠色
+2. **Minimal implementation** - 用最簡實作達成
+3. **No test modification** - 沒有修改任何測試
+4. **Syntactically correct** - 程式碼語法正確
+
+### 📋 Green Phase Checklist:
+- [ ] 失敗的測試現在通過了
+- [ ] 沒有修改任何 `tests/` 目錄的檔案
+- [ ] 實作是最簡可能的版本
+- [ ] 所有現有測試依然通過
+- [ ] 準備好進入 Refactor Phase
+
+## Implementation Strategies
+
+### Strategy 1: Direct Return
+```python
+def method_name(self):
+    return "expected_result"
+```
+
+### Strategy 2: Simple Conditional
+```python  
+def method_name(self, input_value):
+    if input_value == "specific_case":
+        return "expected_result"
+    return "default_result"
+```
+
+### Strategy 3: Exception Throwing
+```python
+def method_name(self, input_value):
+    if input_value == "invalid":
+        raise CustomError("Expected error")
+    return "success"
+```
+
+## Transition to Refactor Phase
+
+Green Phase 完成後，輸出：
+```
+🟢 → 🔧 GREEN PHASE COMPLETE  
+All tests passing: ✅
+Implementation added: [method/class names]
+Ready for REFACTOR PHASE
+```
+
+## Common Green Phase Mistakes to Avoid
+
+❌ **Don't**:
+- 修改測試檔案
+- 過度設計或優化
+- 實作不必要的功能
+- 考慮未來需求
+
+✅ **Do**:  
+- 用最簡實作讓測試通過
+- Hardcode 值完全可以接受
+- 專注於當前失敗的測試
+- 快速且直接的解決方案

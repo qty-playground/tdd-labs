@@ -1,0 +1,187 @@
+# REFACTOR PHASE - Improve Code Quality
+
+## 🔧 REFACTOR PHASE ACTIVE
+
+**目標：在測試保護下改善程式碼品質，保持 interface 不變**
+
+## Strict File Modification Rules
+
+### ✅ ALLOWED - 只能修改這些檔案：
+- `tdd_labs/` 目錄下的實作檔案
+- 改善內部實作程式碼
+- 重新組織程式碼結構
+- 改善變數和方法命名
+
+### ❌ FORBIDDEN - 絕對不可修改：
+- `tests/` 目錄下的任何檔案
+- 任何 `*_test.py` 檔案
+- **Public interface** (方法簽名、類別名稱)
+- 任何會影響測試的外部行為
+
+## Refactor Objectives
+
+### 1. Code Quality Improvements
+
+#### 消除重複 (DRY)
+```python
+# Before: 重複的驗證邏輯
+def validate_email(self, email: str) -> bool:
+    if "@" not in email:
+        return False
+    if len(email) < 5:
+        return False
+    return True
+
+def validate_user_email(self, user: User) -> bool:
+    if "@" not in user.email:
+        return False  
+    if len(user.email) < 5:
+        return False
+    return True
+
+# After: 提取共通方法
+def _is_valid_email_format(self, email: str) -> bool:
+    return "@" in email and len(email) >= 5
+
+def validate_email(self, email: str) -> bool:
+    return self._is_valid_email_format(email)
+
+def validate_user_email(self, user: User) -> bool:
+    return self._is_valid_email_format(user.email)
+```
+
+#### 改善命名 (Screaming Architecture)
+```python
+# Before: 不清楚的命名
+def process(self, data: str) -> str:
+    result = self.check(data)
+    return self.convert(result)
+
+# After: 自我說明的命名  
+def authenticate_user_credentials(self, credentials: str) -> str:
+    validation_result = self._validate_credentials_format(credentials)
+    return self._generate_authentication_token(validation_result)
+```
+
+#### 提取複雜邏輯
+```python
+# Before: 複雜的內聯邏輯
+def register_user(self, email: str, password: str) -> User:
+    if "@" not in email or len(email) < 5:
+        raise ValidationError("Invalid email")
+    if len(password) < 8 or not any(c.isdigit() for c in password):
+        raise ValidationError("Invalid password")
+    user = User(email, password)
+    return user
+
+# After: 提取驗證邏輯
+def register_user(self, email: str, password: str) -> User:
+    self._validate_email_format(email)
+    self._validate_password_strength(password)  
+    return User(email, password)
+
+def _validate_email_format(self, email: str) -> None:
+    if "@" not in email or len(email) < 5:
+        raise ValidationError("Invalid email")
+
+def _validate_password_strength(self, password: str) -> None:
+    if len(password) < 8 or not any(c.isdigit() for c in password):
+        raise ValidationError("Invalid password")
+```
+
+### 2. Interface Preservation Rules
+
+#### ✅ Safe Refactoring (Internal Changes)
+- 重新命名 private 方法 (`_method_name`)
+- 提取 private 方法
+- 改善內部資料結構
+- 重新組織程式碼流程
+- 優化演算法實作
+
+#### ❌ Dangerous Changes (Will Break Tests)
+- 改變 public 方法名稱
+- 修改方法參數或返回型別
+- 改變例外型別
+- 修改類別名稱
+- 改變 public 屬性
+
+### 3. Refactoring Patterns
+
+#### Pattern 1: Extract Method
+```python
+# Before
+def complex_calculation(self, a: int, b: int) -> int:
+    # 複雜邏輯直接寫在一起
+    temp1 = a * 2 + b
+    temp2 = temp1 ** 2
+    result = temp2 % 100
+    return result
+
+# After  
+def complex_calculation(self, a: int, b: int) -> int:
+    intermediate_value = self._calculate_weighted_sum(a, b)
+    squared_value = self._apply_power_transform(intermediate_value)
+    return self._apply_modulo_constraint(squared_value)
+```
+
+#### Pattern 2: Replace Hardcode with Constants
+```python
+# Before
+def validate_password(self, password: str) -> bool:
+    return len(password) >= 8
+
+# After
+MINIMUM_PASSWORD_LENGTH = 8
+
+def validate_password(self, password: str) -> bool:
+    return len(password) >= self.MINIMUM_PASSWORD_LENGTH
+```
+
+## Refactor Phase Completion Criteria
+
+### ✅ Phase Complete When:
+1. **All tests still pass** - 所有測試保持綠色
+2. **Code quality improved** - 程式碼品質有明顯改善
+3. **No interface changes** - Public interface 完全不變
+4. **Better readability** - 程式碼更容易理解
+
+### 📋 Refactor Phase Checklist:
+- [ ] 所有測試依然通過 (跑一次 pytest)
+- [ ] 消除了明顯的程式碼重複
+- [ ] 改善了變數和方法命名
+- [ ] Public interface 保持不變
+- [ ] 程式碼更容易閱讀和理解
+- [ ] 準備好結束此輪 TDD cycle 或進入下一個 Red Phase
+
+## When to Stop Refactoring
+
+### 停止重構的時機：
+1. **沒有明顯的改善空間** - 程式碼已經夠清晰
+2. **測試覆蓋不足** - 需要更多測試保護才能安全重構
+3. **改善幅度很小** - 投入時間不符合改善效果
+4. **準備新功能** - 有新的 business rule 要實作
+
+## Transition to Next Phase
+
+Refactor Phase 完成後，輸出：
+```
+🔧 → ⭐ REFACTOR PHASE COMPLETE
+All tests still passing: ✅  
+Code improvements made: [list improvements]
+Interface preserved: ✅
+Ready for NEXT RED PHASE or WAIT STATE
+```
+
+## Common Refactor Mistakes to Avoid
+
+❌ **Don't**:
+- 修改 public interface
+- 改變測試預期的行為  
+- 修改測試檔案
+- 過度重構 (over-engineering)
+
+✅ **Do**:
+- 頻繁執行測試確認安全
+- 保持小步驟的改善
+- 專注於可讀性和維護性
+- 在測試保護下大膽重構內部實作
