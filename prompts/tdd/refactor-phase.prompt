@@ -137,20 +137,40 @@ def validate_password(self, password: str) -> bool:
     return len(password) >= self.MINIMUM_PASSWORD_LENGTH
 ```
 
-## Refactor Phase Completion Criteria
+## Refactor Phase Completion Criteria - MANDATORY Code Review
+
+### 🔍 ALWAYS Required: Code Review Session
+**不管是否有實際重構，都必須進行 code review 並留下思考紀錄**
+
+#### 🎯 Code Review Process:
+1. **品質檢查** - 即使沒重構，也要檢視程式碼品質
+2. **改善機會評估** - 記錄可能的改善點
+3. **決策記錄** - 說明為什麼選擇重構或不重構
+
+#### 📝 Required Code Review Report:
+```
+🔍 Code Review Report:
+目前程式碼狀態: [描述當前實作的品質]
+發現的改善機會: [列出可能的重構點]
+本次決策: [重構/不重構 + 原因]
+改善成果: [如果重構了，列出具體改善]
+下次重構建議: [未來可以考慮的改善]
+```
 
 ### ✅ Phase Complete When:
-1. **All tests still pass** - 所有測試保持綠色
-2. **Code quality improved** - 程式碼品質有明顯改善
-3. **No interface changes** - Public interface 完全不變
-4. **Better readability** - 程式碼更容易理解
+1. **Mandatory code review done** - 完成強制性 code review
+2. **All tests still pass** - 所有測試保持綠色  
+3. **Review documented** - Code review 結果已記錄
+4. **Decision justified** - 重構或不重構的決策有合理說明
 
-### 📋 Refactor Phase Checklist:
+### 📋 Enhanced Refactor Phase Checklist:
+- [ ] 🔍 **Mandatory**: 完成 code review 檢視
+- [ ] 📝 **Mandatory**: 撰寫 code review report
+- [ ] ⚖️ **Mandatory**: 記錄重構/不重構的決策理由
 - [ ] 所有測試依然通過 (跑一次 pytest)
-- [ ] 消除了明顯的程式碼重複
-- [ ] 改善了變數和方法命名
-- [ ] Public interface 保持不變
-- [ ] 程式碼更容易閱讀和理解
+- [ ] 如果重構：消除了明顯的程式碼重複
+- [ ] 如果重構：改善了變數和方法命名  
+- [ ] 如果重構：Public interface 保持不變
 - [ ] 準備好結束此輪 TDD cycle 或進入下一個 Red Phase
 
 ## When to Stop Refactoring
@@ -166,10 +186,24 @@ def validate_password(self, password: str) -> bool:
 Refactor Phase 完成後，輸出：
 ```
 🔧 → ⭐ REFACTOR PHASE COMPLETE
+🔍 Code Review: ✅ [MANDATORY - DONE]
 All tests still passing: ✅  
-Code improvements made: [list improvements]
+Decision: [重構/不重構] - [reason]
+Code improvements made: [list improvements if any]
 Interface preserved: ✅
 Ready for NEXT RED PHASE or WAIT STATE
+```
+
+### 示範 Code Review Report 範例:
+```
+🔍 Code Review Report:
+目前程式碼狀態: 簡單的 if-else 邏輯，功能正確但可讀性尚可
+發現的改善機會: 
+  - 魔術數字 15, 3, 5 可以提取成常數
+  - 條件判斷可以更語意化
+本次決策: 不重構 - 因為程式碼夠簡單且測試覆蓋充足
+改善成果: N/A
+下次重構建議: 當邏輯更複雜時考慮提取常數和方法命名
 ```
 
 ## Common Refactor Mistakes to Avoid

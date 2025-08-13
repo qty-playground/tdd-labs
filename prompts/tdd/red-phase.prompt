@@ -16,29 +16,56 @@
 - `main.py`, `__init__.py` 等實作相關檔案  
 - 任何非測試的程式碼
 
-## Red Phase Objectives
+## Red Phase Objectives - CRITICAL TDD Purity Rules
 
-### 1. Write One Failing Test
+### 🎯 1. ONE Test, ONE Rule - 絕對原則
+**NEVER write multiple tests in one Red Phase**
+
+❌ **WRONG - Multiple tests:**
 ```python
-def test_should_capture_new_business_rule():
-    """測試名稱要清楚描述 business rule"""
-    # Arrange - 準備測試資料
-    service = TargetService()
-    
-    # Act & Assert - 執行並驗證預期失敗
-    with pytest.raises(NotImplementedError):
-        service.new_business_rule_method()
+def test_should_handle_multiples_of_three():
+    assert foo_bar_bar(3) == "Foo"
+    assert foo_bar_bar(6) == "Foo"  # 這是第二個測試案例！
+    assert foo_bar_bar(9) == "Foo"  # 這是第三個測試案例！
 ```
 
-### 2. Test Quality Requirements
-- **Descriptive Names**: 測試名稱要說明 business rule
-  - ✅ `test_should_reject_invalid_email_format`
-  - ✅ `test_should_require_minimum_password_length`
-  - ❌ `test_validation`
-  - ❌ `test_user`
-- **Single Rule**: 一個測試只驗證一個規則
-- **Clear Intent**: 明確表達預期行為
-- **Minimal Setup**: 最少的測試設置
+✅ **CORRECT - Single test case:**
+```python  
+def test_should_return_foo_when_input_is_3():
+    """只測試 input=3 的情況，不偷看未來需求"""
+    assert foo_bar_bar(3) == "Foo"
+```
+
+### 🚫 2. NO Future Peeking - 當下思維
+- **只考慮當下這一個具體需求**
+- **不要預測或準備未來的測試案例**
+- **即使需求描述包含複數範例，也只挑一個來測試**
+
+❌ **WRONG - Peeking at future:**
+```python
+# 需求: "數字 3, 6, 9 都應該回傳 Foo"
+def test_multiples_of_three():
+    assert foo_bar_bar(3) == "Foo"
+    assert foo_bar_bar(6) == "Foo"  # 偷看未來！
+    assert foo_bar_bar(9) == "Foo"  # 偷看未來！
+```
+
+✅ **CORRECT - Present focus:**
+```python
+# 需求: "數字 3, 6, 9 都應該回傳 Foo" 
+# 但我只測試第一個例子
+def test_should_return_foo_when_input_is_3():
+    assert foo_bar_bar(3) == "Foo"
+```
+
+### 📝 3. Minimal Test Structure
+```python
+def test_should_[具體行為]_when_[具體條件]():
+    """具體描述這一個測試要驗證什麼"""
+    # 最簡單的測試，只驗證一個條件
+    result = target_function(specific_input)
+    assert result == expected_output
+```
 
 ### 3. Expected Failure Types
 ```python

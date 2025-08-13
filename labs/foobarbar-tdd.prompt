@@ -1,0 +1,61 @@
+# FooBarbar TDD 練習題
+
+## 🎯 練習目標
+實作一個 `foo_bar_bar` 函數，使用 TDD 流程逐步完成以下需求。
+
+## 📋 需求規格
+
+### 核心業務規則
+實作 `foo_bar_bar(number: int) -> str` 函數，需要滿足以下規則：
+
+1. **基本規則**: 數字 → 回傳字串化的數字
+2. **Foo 規則**: 能被 3 整除 → "Foo"  
+3. **Barbar 規則**: 能被 5 整除 → "Barbar"
+4. **複合規則**: 同時能被 3 和 5 整除 → "FooBarbar"
+
+### 範例
+```
+foo_bar_bar(1) → "1"
+foo_bar_bar(2) → "2"  
+foo_bar_bar(3) → "Foo"
+foo_bar_bar(4) → "4"
+foo_bar_bar(5) → "Barbar"
+foo_bar_bar(6) → "Foo"
+foo_bar_bar(10) → "Barbar"
+foo_bar_bar(15) → "FooBarbar"
+```
+
+## 🚨 重要提醒
+
+### 預期學習重點
+- **邏輯陷阱發現**: 複合規則會揭露條件檢查順序的經典問題
+- **TDD 威力體驗**: 測試如何幫助發現和解決隱藏問題
+- **小步驟開發**: 一次只專注一個規則的重要性
+
+### 關鍵挑戰
+當實作到複合規則時，你可能會遇到：
+- `foo_bar_bar(15)` 回傳 "Foo" 而不是 "FooBarbar"
+- 這正是 TDD 要幫你發現的邏輯問題！
+
+## 📁 實作要求
+
+### 檔案結構
+- 實作檔案: `tdd_labs/foobarbar.py`
+- 測試檔案: `tests/test_foobarbar.py`
+
+### 函數簽名
+```python
+def foo_bar_bar(number: int) -> str:
+    """
+    根據數字回傳對應的字串
+    - 被3整除: "Foo"
+    - 被5整除: "Barbar"  
+    - 同時被3和5整除: "FooBarbar"
+    - 其他: 數字的字串形式
+    """
+    pass
+```
+
+---
+
+**使用說明**: 請使用 `@prompts/tdd/` 系列 prompts 進行 TDD 開發流程
