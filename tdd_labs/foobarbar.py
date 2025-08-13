@@ -12,4 +12,6 @@ def foo_bar_bar(number: int) -> str:
     """
     if number % 3 == 0:
         return "Foo"
+    elif number % 5 == 0:
+        return "Barbar"
     return str(number)
