@@ -4,6 +4,8 @@
 
 **目標：為新的 business rule 寫一個失敗的測試**
 
+* 如果測試的案例有多個項目時，拆成多個循環一次只進行一個。不用貪心，不用著急。
+
 ## Strict File Modification Rules
 
 ### ✅ ALLOWED - 只能修改這些檔案：

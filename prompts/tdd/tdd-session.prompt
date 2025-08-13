@@ -13,6 +13,7 @@
 
 1. **進入 Red Phase 的條件：**
    - 有新的 business rule 需要實作
+   - 如果被要求「細心」處理的時候，盡可能將 business rule 拆解成單一測試
    - 上一個 refactor 階段完成
    - 發現需要新的測試案例
 
