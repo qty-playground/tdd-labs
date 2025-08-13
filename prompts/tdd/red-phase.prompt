@@ -52,13 +52,23 @@ from tdd_labs.services.new_service import NewService  # ImportError expected
 # Validation rule not implemented
 with pytest.raises(ValidationError):
     service.validate("invalid_input")
+
+# API endpoint not implemented (using test_client fixture)
+def test_should_return_user_profile(test_client):
+    response = test_client.get("/profile")
+    # Expected: 404 or 501 - endpoint not implemented yet
+
+# Authentication required (using authenticated_client fixture)  
+def test_should_require_valid_token(authenticated_client):
+    response = authenticated_client.get("/admin/users")
+    # Expected: 403 or NotImplementedError - authorization logic not implemented
 ```
 
 ## Red Phase Completion Criteria
 
 ### ✅ Phase Complete When:
 1. **Test is written** - 新測試已寫完
-2. **Test runs and fails** - 執行 `pytest` 確認測試失敗
+2. **Test runs and fails** - 執行 `pytest -v` 確認測試被發現且失敗
 3. **Test fails correctly** - 測試因為正確的原因失敗（NotImplementedError, ImportError, etc）
 4. **Test is focused** - 只測試一個 business rule
 5. **Imports are minimal** - 只 import 必要的東西
@@ -66,7 +76,7 @@ with pytest.raises(ValidationError):
 ### 📋 Red Phase Checklist:
 - [ ] 測試寫在正確的 `tests/` 目錄下
 - [ ] 測試名稱清楚描述 business rule
-- [ ] 測試會失敗（且原因正確）
+- [ ] 執行 `pytest -v` 確認測試被發現且會失敗（原因正確）
 - [ ] 沒有修改任何實作程式碼
 - [ ] 準備好進入 Green Phase
 
@@ -80,6 +90,23 @@ Reason for failure: [NotImplementedError/ImportError/etc]
 Ready for GREEN PHASE
 ```
 
+## Test Discovery Guidelines
+
+### 確保測試被 pytest 發現：
+```bash
+# 檢查測試發現情況
+pytest --collect-only
+
+# 檢查特定測試檔案
+pytest --collect-only tests/services/user_service_test.py
+
+# 如果測試沒被發現，檢查：
+# 1. 檔案名稱是否符合 *_test.py 或 test_*.py
+# 2. 函數名稱是否以 test_ 開頭
+# 3. 檔案路徑是否在 tests/ 目錄下
+# 4. 是否有語法錯誤阻止 import
+```
+
 ## Common Red Phase Mistakes to Avoid
 
 ❌ **Don't**:
@@ -87,9 +114,11 @@ Ready for GREEN PHASE
 - 寫多個規則在一個測試裡
 - 讓測試意外通過
 - 過度複雜的測試設置
+- 忘記確認測試被 pytest 發現
 
 ✅ **Do**:
 - 專注寫一個失敗測試
 - 清楚表達 business rule
 - 確認失敗原因正確
 - 保持測試簡單明確
+- 先確認 test discovery 正常

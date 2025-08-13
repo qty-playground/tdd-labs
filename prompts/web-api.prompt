@@ -95,6 +95,46 @@
        return ResponseModel(...)
    ```
 
+5. **FastAPI Testing Setup**
+
+   **使用現有的測試配置 `@tests/conftest.py`：**
+   - 已設置 `test_client` fixture 與 FastAPI TestClient
+   - 使用 dependency overrides 進行測試隔離
+   - 支援 in-memory repositories 避免外部依賴
+   - 提供 `authenticated_client` fixture 用於需要認證的測試
+
+   **新增 dependency override：**
+   ```python
+   # 在 tests/conftest.py 中新增更多 dependency overrides
+   app.dependency_overrides[get_new_service] = lambda: MockNewService()
+   ```
+
+   **API 測試範例：**
+   ```python
+   def test_should_return_health_status(test_client):
+       response = test_client.get("/health")
+       
+       assert response.status_code == 200
+       assert response.json()["status"] == "healthy"
+   
+   def test_should_create_user_via_api(test_client):
+       user_data = {
+           "email": "test@example.com",
+           "name": "Test User"
+       }
+       
+       response = test_client.post("/users", json=user_data)
+       
+       assert response.status_code == 201
+       assert response.json()["email"] == "test@example.com"
+   
+   def test_should_require_authentication(authenticated_client):
+       response = authenticated_client.get("/profile")
+       
+       assert response.status_code == 200
+       assert "email" in response.json()
+   ```
+
 ## Implementation Checklist
 
 - [ ] main.py 不包含任何 @app.get()、@app.post() 等路由裝飾器
@@ -105,5 +145,7 @@
 - [ ] 每個 Pydantic 模型都有 type hints 和詳細的欄位註解
 - [ ] 使用 app.include_router() 註冊所有路由
 - [ ] Router 模組遵循一致的命名和結構模式
+- [ ] 設置 conftest.py 與 FastAPI TestClient
+- [ ] API 測試使用 dependency injection 進行隔離
 
 這個架構確保了程式碼的可維護性、可測試性和可擴展性，同時提供了完整的 API 文檔。
