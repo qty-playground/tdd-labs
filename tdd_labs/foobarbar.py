@@ -6,9 +6,11 @@ def foo_bar_bar(number: int) -> str:
     - 同時被3和5整除: "FooBarbar"
     - 其他: 數字的字串形式
     """
-    # 最極簡實作 - 簡單條件判斷
-    if number == 3:
+    # 修正邏輯 - 先檢查複合規則！
+    if number % 3 == 0 and number % 5 == 0:
+        return "FooBarbar"
+    if number % 3 == 0:
         return "Foo"
-    if number == 5:
+    if number % 5 == 0:
         return "Barbar"
-    return "1"
+    return str(number)
