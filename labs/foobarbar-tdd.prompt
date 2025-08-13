@@ -56,6 +56,30 @@ def foo_bar_bar(number: int) -> str:
     pass
 ```
 
+## 📝 進度記錄要求
+
+### ⚡ 重要：每個階段完成後必須 git commit
+**每完成一個 TDD 階段（Red/Green/Refactor）都要立即 commit 記錄進度**
+
+### 標準 Commit 格式
+```
+TDD FooBarbar 階段 X [Red/Green/Refactor]: [簡述]
+
+目前第幾階段: 階段 X (第X輪循環)
+主要 rule: [這次要實作的規則]
+達到目標: [這階段的具體目標]
+
+現在 TDD 階段: [Red/Green/Refactor] Phase - [正在做什麼]
+下一個 TDD 階段: [下一個階段是什麼]
+
+[主要成就: [這次的重要發現或完成事項]]
+```
+
+### Commit 時機
+- 🔴 **Red Phase 完成** → git commit (測試失敗但原因正確)
+- 🟢 **Green Phase 完成** → git commit (測試通過，實作完成)
+- 🔧 **Refactor Phase 完成** → git commit (程式碼改善，測試仍通過)
+
 ---
 
 **使用說明**: 請使用 `@prompts/tdd/` 系列 prompts 進行 TDD 開發流程
