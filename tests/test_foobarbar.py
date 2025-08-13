@@ -18,3 +18,11 @@ def test_should_return_foo_for_multiples_of_3():
     """
     assert foo_bar_bar(3) == "Foo"
     assert foo_bar_bar(6) == "Foo"
+
+
+def test_should_return_barbar_for_multiples_of_5():
+    """
+    測試 Barbar 規則：當數字是 5 的倍數時，應回傳 "Barbar"
+    """
+    assert foo_bar_bar(5) == "Barbar"
+    assert foo_bar_bar(10) == "Barbar"
