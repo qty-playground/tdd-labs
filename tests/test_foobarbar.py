@@ -10,3 +10,11 @@ def test_should_return_number_string_for_non_multiples():
     assert foo_bar_bar(1) == "1"
     assert foo_bar_bar(2) == "2"
     assert foo_bar_bar(4) == "4"
+
+
+def test_should_return_foo_for_multiples_of_3():
+    """
+    測試 Foo 規則：當數字是 3 的倍數時，應回傳 "Foo"
+    """
+    assert foo_bar_bar(3) == "Foo"
+    assert foo_bar_bar(6) == "Foo"
