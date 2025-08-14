@@ -1,8 +1,8 @@
-# TDD Session Controller
+# TDD Session Controller (Java SE)
 
-## 🔍 Requirements Analysis & Planning
+## ☕ Java SE TDD Workflow
 
-### 🎯 當收到新需求時的反思流程
+### 🎯 當收到新需求時的反思流程  
 **在進入任何 TDD 階段前，必須先進行需求分析**
 
 #### 必要反思檢查點：
@@ -10,25 +10,25 @@
 ❓ 反思問題：
 1. 這個需求是否包含多個獨立的測試案例？
 2. 如果是，應該拆解成幾個 TDD cycles？
-3. 每個 cycle 要測試什麼具體的輸入→輸出？
+3. 每個 cycle 要測試什麼具體的方法簽名和輸入→輸出？
 
 📋 分析輸出格式：
 TDD Cycles Planning:
-Cycle 1: [案例描述] - Input: X, Expected: Y
-Cycle 2: [案例描述] - Input: X, Expected: Y  
+Cycle 1: [測試方法描述] - Input: X, Expected: Y
+Cycle 2: [測試方法描述] - Input: X, Expected: Y  
 ...
 總計: N 輪 cycles
 當前處理: Cycle 1
 ```
 
 #### 🚨 需要拆解的需求識別：
-- **多個具體範例**: "數字 3, 6, 9 都應該回傳 Foo" → 3個 cycles
-- **不同規則組合**: "基本規則 + Foo規則 + 複合規則" → 至少3個 cycles  
-- **邊界條件列舉**: "正數、負數、零的處理" → 3個 cycles
+- **多個具體範例**: "數字 3, 6, 9 都應該回傳 Foo" → 3個 test methods
+- **不同規則組合**: "基本規則 + Foo規則 + 複合規則" → 至少3個 test cycles  
+- **邊界條件列舉**: "正數、負數、零的處理" → 3個 test cases
 
 #### ✅ 單一案例的需求：
-- **一個具體輸入輸出**: "當輸入3時應該回傳Foo" → 1個 cycle
-- **單一規則驗證**: "驗證email格式檢查" → 1個 cycle
+- **一個具體輸入輸出**: "當輸入3時應該回傳Foo" → 1個 test method
+- **單一規則驗證**: "驗證email格式檢查" → 1個 test cycle
 
 ## State Machine Control
 
@@ -49,7 +49,7 @@ Cycle 2: [案例描述] - Input: X, Expected: Y
 
 2. **進入 Green Phase 的條件：**
    - Red phase 完成（有失敗的測試）
-   - tests/ 目錄下有新的失敗測試
+   - src/test/java/ 目錄下有新的失敗測試
    - 需要實作程式碼讓測試通過
 
 3. **進入 Refactor Phase 的條件：**
@@ -78,25 +78,25 @@ Cycle 2: [案例描述] - Input: X, Expected: Y
 ```
 現在進入 RED PHASE - Cycle X
 使用 @prompts/tdd/red-phase.prompt
-目標：為當前 cycle 的案例寫失敗測試
+目標：為當前 cycle 的案例寫失敗的 JUnit 測試
 當前案例：[具體輸入] → [預期輸出]
-執行：pytest tests/ -v 確認測試失敗
+執行：mvn test 或 gradle test 確認測試失敗
 ```
 
 ### 啟動 Green Phase  
 ```
 現在進入 GREEN PHASE
 使用 @prompts/tdd/green-phase.prompt  
-目標：最簡實作讓測試通過
-執行：pytest tests/ -v 確認測試通過
+目標：最簡實作讓 JUnit 測試通過
+執行：mvn test 或 gradle test 確認測試通過
 ```
 
 ### 啟動 Refactor Phase
 ```
 現在進入 REFACTOR PHASE
 使用 @prompts/tdd/refactor-phase.prompt
-目標：改善程式碼品質，保持測試通過
-執行：pytest tests/ -v 頻繁確認測試仍通過
+目標：改善程式碼品質，保持 JUnit 測試通過
+執行：mvn test 或 gradle test 頻繁確認測試仍通過
 ```
 
 ### 等待新規則
@@ -109,12 +109,14 @@ TDD CYCLE COMPLETE
 ## Session Management
 
 ### 當前會話狀態
-- Module: `tdd_labs/services/example_service.py`
-- Test File: `tests/services/example_service_test.py`  
+- Main Class: `src/main/java/com/example/ExampleService.java`
+- Test Class: `src/test/java/com/example/ExampleServiceTest.java`  
 - Current Phase: `[PLANNING|RED|GREEN|REFACTOR|WAITING]`
 - Current Cycle: `Cycle X / Total Y cycles`
 - Current Test Case: `具體的輸入 → 預期輸出`
 - Remaining Cases: `剩餘要處理的案例列表`
+- Build Tool: `[Maven|Gradle]`
+- Java Version: `Java 8+ recommended`
 
 ### Phase Completion Checklist
 - [ ] Planning: 需求已分析，cycles 已規劃
@@ -133,3 +135,81 @@ TDD CYCLE COMPLETE
 5. **文件約束**: 嚴格遵守檔案修改限制
 6. **完成確認**: 每個階段結束前確認目標達成
 7. **循環管理**: 完成一輪後，檢查是否有下一個案例要處理
+
+## ☕ Java SE Specific Guidelines
+
+### 專案結構 (Maven Standard)
+```
+project-root/
+├── src/
+│   ├── main/java/
+│   │   └── com/example/
+│   │       └── YourClass.java
+│   └── test/java/
+│       └── com/example/
+│           └── YourClassTest.java
+├── pom.xml (Maven) 或 build.gradle (Gradle)
+└── README.md
+```
+
+### 測試框架選擇
+- **JUnit 5** (推薦): `@Test`, `assertEquals()`, `assertThrows()`
+- **JUnit 4** (兼容): `@Test`, `Assert.assertEquals()`
+- **TestNG** (替代): `@Test`, `Assert.assertEquals()`
+
+### 建議依賴設定 (Maven pom.xml)
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>5.9.2</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+```
+
+### 常用測試命令
+```bash
+# Maven
+mvn test                    # 執行所有測試
+mvn test -Dtest=ClassName   # 執行特定測試類
+mvn compile                 # 編譯主程式碼
+mvn clean compile          # 清理後重新編譯
+
+# Gradle  
+gradle test                 # 執行所有測試
+gradle test --tests ClassName  # 執行特定測試類
+gradle compileJava         # 編譯主程式碼
+gradle clean build         # 清理後重新構建
+```
+
+### Java TDD 最佳實踐
+1. **測試方法命名**: `should_ReturnExpected_When_GivenInput()`
+2. **測試類命名**: `ClassNameTest` 或 `ClassNameTests`
+3. **一個測試一個斷言**: 保持測試簡潔明確
+4. **使用 AAA 模式**: Arrange → Act → Assert
+5. **適當使用 @BeforeEach** 和 **@AfterEach** 進行setup/cleanup
+
+### 範例測試模板 (JUnit 5)
+```java
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+class ExampleServiceTest {
+    
+    @Test
+    void should_ReturnExpected_When_GivenInput() {
+        // Arrange
+        ExampleService service = new ExampleService();
+        int input = 3;
+        String expected = "Foo";
+        
+        // Act
+        String actual = service.process(input);
+        
+        // Assert
+        assertEquals(expected, actual);
+    }
+}
+```
