@@ -3,7 +3,7 @@
 ## State Machine Control
 
 ```
-[Start] → Red → Green → Refactor → Red → ... → [Wait for New Rule]
+[Start] → Analysis → Red → Green → Refactor → Red → ... → [Wait for New Rule]
 ```
 
 ## Current State Detection
@@ -11,10 +11,15 @@
 ### Determine Current Phase
 檢查當前狀況來決定應該在哪個階段：
 
-1. **進入 Red Phase 的條件：**
+0. **進入 Analysis Phase 的條件：**
    - 有新的 business rule 需要實作
-   - 如果被要求「細心」處理的時候，盡可能將 business rule 拆解成單一測試
-   - 上一個 refactor 階段完成
+   - 需求可能包含多個測試案例
+   - 需要拆解和規劃 TDD cycles
+
+1. **進入 Red Phase 的條件：**
+   - Analysis phase 完成（已規劃好測試案例）
+   - 準備開始某一輪 TDD cycle
+   - 上一個 refactor 階段完成，進入下一輪
    - 發現需要新的測試案例
 
 2. **進入 Green Phase 的條件：**
@@ -33,6 +38,14 @@
    - 沒有明顯的程式碼改善需求
 
 ## Phase Transition Commands
+
+### 啟動 Analysis Phase
+```
+現在進入 ANALYSIS PHASE
+使用 @prompts/tdd/analysis-phase.prompt
+目標：分析需求，拆解測試案例，規劃 TDD cycles
+輸出：規劃的 cycles 列表和當前聚焦的案例
+```
 
 ### 啟動 Red Phase
 ```
@@ -70,19 +83,22 @@ TDD CYCLE COMPLETE
 ### 當前會話狀態
 - Module: `tdd_labs/services/example_service.py`
 - Test File: `tests/services/example_service_test.py`  
-- Current Phase: `[RED|GREEN|REFACTOR|WAITING]`
+- Current Phase: `[ANALYSIS|RED|GREEN|REFACTOR|WAITING]`
+- Current Cycle: `Cycle X / Total Y cycles`
 - Current Rule: `描述正在實作的業務規則`
 
 ### Phase Completion Checklist
+- [ ] Analysis: 需求拆解完成，cycles 已規劃
 - [ ] Red: 測試寫完且失敗
 - [ ] Green: 測試通過，功能實作
 - [ ] Refactor: 程式碼改善，測試仍通過
-- [ ] Session: 準備接受新的 business rule
+- [ ] Session: 所有 cycles 完成，準備接受新的 business rule
 
 ## State Transition Rules
 
-1. **嚴格順序**: Red → Green → Refactor
+1. **嚴格順序**: Analysis → Red → Green → Refactor (for each cycle)
 2. **不可跳過**: 每個階段都必須完成
 3. **單一職責**: 每個階段只做該階段的事
 4. **文件約束**: 嚴格遵守檔案修改限制
 5. **完成確認**: 每個階段結束前確認目標達成
+6. **循環管理**: 完成一輪後，檢查是否有下一個案例要處理

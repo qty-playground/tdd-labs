@@ -1,0 +1,185 @@
+# ANALYSIS PHASE - Requirements Breakdown
+
+## 🔍 ANALYSIS PHASE ACTIVE
+
+**目標：分析需求，拆解成多個獨立的測試案例，規劃 TDD cycles**
+
+## Phase Objectives
+
+### 🎯 1. Requirements Decomposition - 需求拆解
+
+#### 反思檢查點：
+```
+收到的需求是否包含多個測試案例？
+- ✅ 是：需要拆解成多輪 TDD cycle
+- ❌ 否：可以直接進入 Red Phase
+```
+
+#### 拆解原則：
+1. **一個具體輸入輸出 = 一個測試案例**
+2. **一個測試案例 = 一輪 TDD cycle**  
+3. **不同的邊界條件 = 不同的測試案例**
+
+#### 🚨 需要拆解的需求範例：
+
+❌ **錯誤理解** - 當作一個測試：
+```
+需求：「數字 3, 6, 9 都應該回傳 Foo」
+誤解：寫一個測試驗證三個案例
+```
+
+✅ **正確拆解** - 三個獨立測試：
+```
+需求：「數字 3, 6, 9 都應該回傳 Foo」
+拆解為：
+- 案例1: foo_bar_bar(3) → "Foo"
+- 案例2: foo_bar_bar(6) → "Foo"  
+- 案例3: foo_bar_bar(9) → "Foo"
+每個案例都需要獨立的一輪 Red→Green→Refactor
+```
+
+### 📋 2. Test Case Identification - 測試案例識別
+
+#### 識別模式：
+```python
+# Pattern 1: 多個具體範例
+"數字 1, 2, 4 應該回傳字串化的數字"
+→ 3個測試案例
+
+# Pattern 2: 範圍描述  
+"所有能被3整除的數字都應該回傳 Foo"
+→ 選擇代表性案例：3, 6, 9, 12... (建議 2-3 個)
+
+# Pattern 3: 邊界條件
+"正數、負數、零都有不同處理方式"
+→ 3個測試案例
+
+# Pattern 4: 複合條件
+"同時滿足條件A和條件B的情況"
+→ 至少1個測試案例 + 各別條件的案例
+```
+
+### 🗺️ 3. TDD Cycle Planning - 循環規劃
+
+#### 規劃格式：
+```
+📊 TDD Cycles Planning:
+
+Cycle 1: [簡述第一個要測試的案例]
+  - Input: [具體輸入]
+  - Expected: [預期輸出]  
+  - Rule: [這個案例要驗證的業務規則]
+
+Cycle 2: [簡述第二個要測試的案例]
+  - Input: [具體輸入]
+  - Expected: [預期輸出]
+  - Rule: [這個案例要驗證的業務規則]
+
+...
+
+總計: X 輪 TDD cycles
+當前準備開始: Cycle 1
+```
+
+### 🎯 4. Current Focus - 當前聚焦
+
+#### 聚焦原則：
+```
+🔍 Current Cycle Focus:
+正在處理: Cycle [X] - [案例描述]
+本輪目標: [具體的輸入 → 輸出]
+其他案例: [暫時忽略，留給後續循環]
+
+準備進入: RED PHASE for Cycle [X]
+```
+
+## Analysis Phase Completion Criteria
+
+### ✅ Phase Complete When:
+1. **需求已拆解** - 識別出所有獨立的測試案例
+2. **循環已規劃** - 明確列出要進行幾輪 TDD cycle
+3. **當前已聚焦** - 清楚本輪要處理的具體案例
+4. **下一步明確** - 準備進入第1輪 Red Phase
+
+### 📋 Analysis Phase Checklist:
+- [ ] 分析需求是否包含多個測試案例
+- [ ] 列出所有識別出的測試案例
+- [ ] 規劃 TDD cycles 的執行順序
+- [ ] 聚焦到第一個要處理的案例
+- [ ] 確認第一個案例的輸入輸出
+- [ ] 準備好進入 Red Phase
+
+## Examples
+
+### 範例1: FooBarbar 需求分析
+
+```
+🔍 接收到的需求：
+實作 foo_bar_bar 函數，規則如下：
+1. 基本規則: 數字 → 回傳字串化的數字
+2. Foo 規則: 能被 3 整除 → "Foo"  
+3. Barbar 規則: 能被 5 整除 → "Barbar"
+4. 複合規則: 同時能被 3 和 5 整除 → "FooBarbar"
+
+📊 分析結果：
+這個需求包含 4 個不同的規則，每個規則至少需要 1 個測試案例
+
+📋 測試案例拆解：
+案例1: foo_bar_bar(1) → "1" (基本規則)
+案例2: foo_bar_bar(3) → "Foo" (Foo 規則)
+案例3: foo_bar_bar(5) → "Barbar" (Barbar 規則)  
+案例4: foo_bar_bar(15) → "FooBarbar" (複合規則)
+
+📊 TDD Cycles Planning:
+Cycle 1: 基本規則測試
+  - Input: 1
+  - Expected: "1"
+  - Rule: 普通數字回傳字串化
+
+Cycle 2: Foo 規則測試
+  - Input: 3  
+  - Expected: "Foo"
+  - Rule: 被3整除回傳Foo
+
+Cycle 3: Barbar 規則測試
+  - Input: 5
+  - Expected: "Barbar"  
+  - Rule: 被5整除回傳Barbar
+
+Cycle 4: 複合規則測試
+  - Input: 15
+  - Expected: "FooBarbar"
+  - Rule: 同時被3和5整除回傳FooBarbar
+
+總計: 4 輪 TDD cycles
+
+🔍 Current Cycle Focus:
+正在處理: Cycle 1 - 基本規則測試
+本輪目標: foo_bar_bar(1) → "1"
+其他案例: Foo, Barbar, FooBarbar (留給後續循環)
+```
+
+## Transition to Red Phase
+
+Analysis Phase 完成後，輸出：
+```
+🔍 → 🔴 ANALYSIS PHASE COMPLETE
+Total cycles planned: [X]
+Current cycle: 1 - [案例描述]
+Focus: [具體輸入] → [預期輸出]
+Ready for RED PHASE - Cycle 1
+```
+
+## Common Analysis Mistakes to Avoid
+
+❌ **Don't**:
+- 把多個案例當作一個測試
+- 過度分析，陷入分析癱瘓
+- 忘記聚焦到當前要處理的案例
+- 在分析階段就考慮實作細節
+
+✅ **Do**:
+- 清楚識別每個獨立的輸入輸出
+- 簡潔明確地規劃循環
+- 專注當前循環，暫時忽略其他
+- 保持分析和實作的分離
