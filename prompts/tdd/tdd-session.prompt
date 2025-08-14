@@ -1,5 +1,35 @@
 # TDD Session Controller
 
+## 🔍 Requirements Analysis & Planning
+
+### 🎯 當收到新需求時的反思流程
+**在進入任何 TDD 階段前，必須先進行需求分析**
+
+#### 必要反思檢查點：
+```
+❓ 反思問題：
+1. 這個需求是否包含多個獨立的測試案例？
+2. 如果是，應該拆解成幾個 TDD cycles？
+3. 每個 cycle 要測試什麼具體的輸入→輸出？
+
+📋 分析輸出格式：
+TDD Cycles Planning:
+Cycle 1: [案例描述] - Input: X, Expected: Y
+Cycle 2: [案例描述] - Input: X, Expected: Y  
+...
+總計: N 輪 cycles
+當前處理: Cycle 1
+```
+
+#### 🚨 需要拆解的需求識別：
+- **多個具體範例**: "數字 3, 6, 9 都應該回傳 Foo" → 3個 cycles
+- **不同規則組合**: "基本規則 + Foo規則 + 複合規則" → 至少3個 cycles  
+- **邊界條件列舉**: "正數、負數、零的處理" → 3個 cycles
+
+#### ✅ 單一案例的需求：
+- **一個具體輸入輸出**: "當輸入3時應該回傳Foo" → 1個 cycle
+- **單一規則驗證**: "驗證email格式檢查" → 1個 cycle
+
 ## State Machine Control
 
 ```
@@ -12,10 +42,10 @@
 檢查當前狀況來決定應該在哪個階段：
 
 1. **進入 Red Phase 的條件：**
-   - 有新的 business rule 需要實作
-   - 如果被要求「細心」處理的時候，盡可能將 business rule 拆解成單一測試
-   - 上一個 refactor 階段完成
-   - 發現需要新的測試案例
+   - 已完成需求分析，明確本輪要測試的案例
+   - 準備開始某一個具體的 TDD cycle
+   - 上一個 refactor 階段完成，進入下一輪 cycle
+   - 有明確的單一測試案例要實作
 
 2. **進入 Green Phase 的條件：**
    - Red phase 完成（有失敗的測試）
@@ -34,11 +64,22 @@
 
 ## Phase Transition Commands
 
+### 需求分析和規劃
+```
+🔍 REQUIREMENTS ANALYSIS:
+1. 分析收到的需求是否包含多個測試案例
+2. 拆解成獨立的輸入→輸出案例
+3. 規劃要進行幾輪 TDD cycles
+4. 聚焦到第一個要處理的案例
+輸出：TDD Cycles Planning 清單
+```
+
 ### 啟動 Red Phase
 ```
-現在進入 RED PHASE
+現在進入 RED PHASE - Cycle X
 使用 @prompts/tdd/red-phase.prompt
-目標：為新的 business rule 寫失敗測試
+目標：為當前 cycle 的案例寫失敗測試
+當前案例：[具體輸入] → [預期輸出]
 執行：pytest tests/ -v 確認測試失敗
 ```
 
@@ -70,19 +111,25 @@ TDD CYCLE COMPLETE
 ### 當前會話狀態
 - Module: `tdd_labs/services/example_service.py`
 - Test File: `tests/services/example_service_test.py`  
-- Current Phase: `[RED|GREEN|REFACTOR|WAITING]`
-- Current Rule: `描述正在實作的業務規則`
+- Current Phase: `[PLANNING|RED|GREEN|REFACTOR|WAITING]`
+- Current Cycle: `Cycle X / Total Y cycles`
+- Current Test Case: `具體的輸入 → 預期輸出`
+- Remaining Cases: `剩餘要處理的案例列表`
 
 ### Phase Completion Checklist
-- [ ] Red: 測試寫完且失敗
-- [ ] Green: 測試通過，功能實作
-- [ ] Refactor: 程式碼改善，測試仍通過
-- [ ] Session: 準備接受新的 business rule
+- [ ] Planning: 需求已分析，cycles 已規劃
+- [ ] Red: 測試寫完且失敗 (當前 cycle)
+- [ ] Green: 測試通過，功能實作 (當前 cycle)
+- [ ] Refactor: 程式碼改善，測試仍通過 (當前 cycle)
+- [ ] Cycle Complete: 當前 cycle 完成，檢查是否有下一個
+- [ ] Session: 所有 cycles 完成，準備接受新的 business rule
 
 ## State Transition Rules
 
-1. **嚴格順序**: Red → Green → Refactor
-2. **不可跳過**: 每個階段都必須完成
-3. **單一職責**: 每個階段只做該階段的事
-4. **文件約束**: 嚴格遵守檔案修改限制
-5. **完成確認**: 每個階段結束前確認目標達成
+1. **需求分析優先**: 收到需求 → 先分析拆解 → 再進入 TDD
+2. **嚴格順序**: Red → Green → Refactor (for each cycle)
+3. **不可跳過**: 每個階段都必須完成
+4. **單一職責**: 每個階段只做該階段的事  
+5. **文件約束**: 嚴格遵守檔案修改限制
+6. **完成確認**: 每個階段結束前確認目標達成
+7. **循環管理**: 完成一輪後，檢查是否有下一個案例要處理
