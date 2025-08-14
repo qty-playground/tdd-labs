@@ -80,7 +80,7 @@ Cycle 2: [測試方法描述] - Input: X, Expected: Y
 使用 @prompts/tdd/red-phase.prompt
 目標：為當前 cycle 的案例寫失敗的 JUnit 測試
 當前案例：[具體輸入] → [預期輸出]
-執行：mvn test 或 gradle test 確認測試失敗
+執行：./mvnw test 或 ./gradlew test（優先使用 wrapper）確認測試失敗
 ```
 
 ### 啟動 Green Phase  
@@ -88,7 +88,7 @@ Cycle 2: [測試方法描述] - Input: X, Expected: Y
 現在進入 GREEN PHASE
 使用 @prompts/tdd/green-phase.prompt  
 目標：最簡實作讓 JUnit 測試通過
-執行：mvn test 或 gradle test 確認測試通過
+執行：./mvnw test 或 ./gradlew test（優先使用 wrapper）確認測試通過
 ```
 
 ### 啟動 Refactor Phase
@@ -96,7 +96,7 @@ Cycle 2: [測試方法描述] - Input: X, Expected: Y
 現在進入 REFACTOR PHASE
 使用 @prompts/tdd/refactor-phase.prompt
 目標：改善程式碼品質，保持 JUnit 測試通過
-執行：mvn test 或 gradle test 頻繁確認測試仍通過
+執行：./mvnw test 或 ./gradlew test（優先使用 wrapper）頻繁確認測試仍通過
 ```
 
 ### 等待新規則
@@ -169,19 +169,31 @@ project-root/
 </dependencies>
 ```
 
-### 常用測試命令
+### 常用測試命令（優先使用 wrapper）
 ```bash
-# Maven
-mvn test                    # 執行所有測試
-mvn test -Dtest=ClassName   # 執行特定測試類
-mvn compile                 # 編譯主程式碼
-mvn clean compile          # 清理後重新編譯
+# Maven - 優先使用 wrapper
+./mvnw test                    # 執行所有測試（如果有 mvnw）
+./mvnw test -Dtest=ClassName   # 執行特定測試類
+./mvnw compile                 # 編譯主程式碼
+./mvnw clean compile          # 清理後重新編譯
 
-# Gradle  
-gradle test                 # 執行所有測試
-gradle test --tests ClassName  # 執行特定測試類
-gradle compileJava         # 編譯主程式碼
-gradle clean build         # 清理後重新構建
+# 如果沒有 wrapper，fallback 到：
+mvn test
+mvn test -Dtest=ClassName
+mvn compile
+mvn clean compile
+
+# Gradle - 優先使用 wrapper
+./gradlew test                 # 執行所有測試（如果有 gradlew）
+./gradlew test --tests ClassName  # 執行特定測試類
+./gradlew compileJava         # 編譯主程式碼
+./gradlew clean build         # 清理後重新構建
+
+# 如果沒有 wrapper，fallback 到：
+gradle test
+gradle test --tests ClassName
+gradle compileJava
+gradle clean build
 ```
 
 ### Java TDD 最佳實踐

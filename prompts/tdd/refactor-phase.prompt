@@ -1,140 +1,176 @@
-# REFACTOR PHASE - Improve Code Quality
+# REFACTOR PHASE - Improve Java Code Quality
 
-## 🔧 REFACTOR PHASE ACTIVE
+## 🔧 REFACTOR PHASE ACTIVE (Java SE + Maven)
 
-**目標：在測試保護下改善程式碼品質，保持 interface 不變**
+**目標：在 JUnit 測試保護下改善 Java 程式碼品質，保持 public interface 不變**
 
 ## Strict File Modification Rules
 
 ### ✅ ALLOWED - 只能修改這些檔案：
-- `tdd_labs/` 目錄下的實作檔案
+- `src/main/java/` 目錄下的實作檔案
 - 改善內部實作程式碼
-- 重新組織程式碼結構
-- 改善變數和方法命名
+- 重新組織 class 結構和 packages
+- 改善變數和 private/protected method 命名
 
 ### ❌ FORBIDDEN - 絕對不可修改：
-- `tests/` 目錄下的任何檔案
-- 任何 `*_test.py` 檔案
-- **Public interface** (方法簽名、類別名稱)
-- 任何會影響測試的外部行為
+- `src/test/java/` 目錄下的任何檔案
+- 任何 `*Test.java` 檔案
+- **Public method signatures** (method 名稱、參數、返回類型)
+- **Public class names** (類別名稱)
+- 任何會影響 JUnit 測試的外部行為
 
 ## Refactor Objectives
 
 ### 1. Code Quality Improvements
 
 #### 消除重複 (DRY)
-```python
-# Before: 重複的驗證邏輯
-def validate_email(self, email: str) -> bool:
-    if "@" not in email:
-        return False
-    if len(email) < 5:
-        return False
-    return True
+```java
+// Before: 重複的驗證邏輯
+public boolean validateEmail(String email) {
+    if (!email.contains("@")) {
+        return false;
+    }
+    if (email.length() < 5) {
+        return false;
+    }
+    return true;
+}
 
-def validate_user_email(self, user: User) -> bool:
-    if "@" not in user.email:
-        return False  
-    if len(user.email) < 5:
-        return False
-    return True
+public boolean validateUserEmail(User user) {
+    if (!user.getEmail().contains("@")) {
+        return false;
+    }
+    if (user.getEmail().length() < 5) {
+        return false;
+    }
+    return true;
+}
 
-# After: 提取共通方法
-def _is_valid_email_format(self, email: str) -> bool:
-    return "@" in email and len(email) >= 5
+// After: 提取共通方法
+private boolean isValidEmailFormat(String email) {
+    return email.contains("@") && email.length() >= 5;
+}
 
-def validate_email(self, email: str) -> bool:
-    return self._is_valid_email_format(email)
+public boolean validateEmail(String email) {
+    return isValidEmailFormat(email);
+}
 
-def validate_user_email(self, user: User) -> bool:
-    return self._is_valid_email_format(user.email)
+public boolean validateUserEmail(User user) {
+    return isValidEmailFormat(user.getEmail());
+}
 ```
 
 #### 改善命名 (Screaming Architecture)
-```python
-# Before: 不清楚的命名
-def process(self, data: str) -> str:
-    result = self.check(data)
-    return self.convert(result)
+```java
+// Before: 不清楚的命名
+public String process(String data) {
+    boolean result = check(data);
+    return convert(result);
+}
 
-# After: 自我說明的命名  
-def authenticate_user_credentials(self, credentials: str) -> str:
-    validation_result = self._validate_credentials_format(credentials)
-    return self._generate_authentication_token(validation_result)
+// After: 自我說明的命名  
+public String authenticateUserCredentials(String credentials) {
+    boolean validationResult = validateCredentialsFormat(credentials);
+    return generateAuthenticationToken(validationResult);
+}
 ```
 
 #### 提取複雜邏輯
-```python
-# Before: 複雜的內聯邏輯
-def register_user(self, email: str, password: str) -> User:
-    if "@" not in email or len(email) < 5:
-        raise ValidationError("Invalid email")
-    if len(password) < 8 or not any(c.isdigit() for c in password):
-        raise ValidationError("Invalid password")
-    user = User(email, password)
-    return user
+```java
+// Before: 複雜的內聯邏輯
+public User registerUser(String email, String password) throws ValidationException {
+    if (!email.contains("@") || email.length() < 5) {
+        throw new ValidationException("Invalid email");
+    }
+    if (password.length() < 8 || !password.chars().anyMatch(Character::isDigit)) {
+        throw new ValidationException("Invalid password");
+    }
+    return new User(email, password);
+}
 
-# After: 提取驗證邏輯
-def register_user(self, email: str, password: str) -> User:
-    self._validate_email_format(email)
-    self._validate_password_strength(password)  
-    return User(email, password)
+// After: 提取驗證邏輯
+public User registerUser(String email, String password) throws ValidationException {
+    validateEmailFormat(email);
+    validatePasswordStrength(password);
+    return new User(email, password);
+}
 
-def _validate_email_format(self, email: str) -> None:
-    if "@" not in email or len(email) < 5:
-        raise ValidationError("Invalid email")
+private void validateEmailFormat(String email) throws ValidationException {
+    if (!email.contains("@") || email.length() < 5) {
+        throw new ValidationException("Invalid email");
+    }
+}
 
-def _validate_password_strength(self, password: str) -> None:
-    if len(password) < 8 or not any(c.isdigit() for c in password):
-        raise ValidationError("Invalid password")
+private void validatePasswordStrength(String password) throws ValidationException {
+    if (password.length() < 8 || !password.chars().anyMatch(Character::isDigit)) {
+        throw new ValidationException("Invalid password");
+    }
+}
 ```
 
 ### 2. Interface Preservation Rules
 
 #### ✅ Safe Refactoring (Internal Changes)
-- 重新命名 private 方法 (`_method_name`)
+- 重新命名 private 方法 (`private methodName()`)
 - 提取 private 方法
 - 改善內部資料結構
 - 重新組織程式碼流程
 - 優化演算法實作
+- 改善 private field 命名
 
 #### ❌ Dangerous Changes (Will Break Tests)
 - 改變 public 方法名稱
-- 修改方法參數或返回型別
+- 修改方法參數或返回型別  
 - 改變例外型別
 - 修改類別名稱
-- 改變 public 屬性
+- 改變 public field 或 getter/setter signatures
 
 ### 3. Refactoring Patterns
 
 #### Pattern 1: Extract Method
-```python
-# Before
-def complex_calculation(self, a: int, b: int) -> int:
-    # 複雜邏輯直接寫在一起
-    temp1 = a * 2 + b
-    temp2 = temp1 ** 2
-    result = temp2 % 100
-    return result
+```java
+// Before
+public int complexCalculation(int a, int b) {
+    // 複雜邏輯直接寫在一起
+    int temp1 = a * 2 + b;
+    int temp2 = temp1 * temp1;
+    int result = temp2 % 100;
+    return result;
+}
 
-# After  
-def complex_calculation(self, a: int, b: int) -> int:
-    intermediate_value = self._calculate_weighted_sum(a, b)
-    squared_value = self._apply_power_transform(intermediate_value)
-    return self._apply_modulo_constraint(squared_value)
+// After  
+public int complexCalculation(int a, int b) {
+    int intermediateValue = calculateWeightedSum(a, b);
+    int squaredValue = applyPowerTransform(intermediateValue);
+    return applyModuloConstraint(squaredValue);
+}
+
+private int calculateWeightedSum(int a, int b) {
+    return a * 2 + b;
+}
+
+private int applyPowerTransform(int value) {
+    return value * value;
+}
+
+private int applyModuloConstraint(int value) {
+    return value % 100;
+}
 ```
 
 #### Pattern 2: Replace Hardcode with Constants
-```python
-# Before
-def validate_password(self, password: str) -> bool:
-    return len(password) >= 8
+```java
+// Before
+public boolean validatePassword(String password) {
+    return password.length() >= 8;
+}
 
-# After
-MINIMUM_PASSWORD_LENGTH = 8
+// After
+private static final int MINIMUM_PASSWORD_LENGTH = 8;
 
-def validate_password(self, password: str) -> bool:
-    return len(password) >= self.MINIMUM_PASSWORD_LENGTH
+public boolean validatePassword(String password) {
+    return password.length() >= MINIMUM_PASSWORD_LENGTH;
+}
 ```
 
 ## Refactor Phase Completion Criteria - MANDATORY Code Review
@@ -167,11 +203,22 @@ def validate_password(self, password: str) -> bool:
 - [ ] 🔍 **Mandatory**: 完成 code review 檢視
 - [ ] 📝 **Mandatory**: 撰寫 code review report
 - [ ] ⚖️ **Mandatory**: 記錄重構/不重構的決策理由
-- [ ] 所有測試依然通過 (跑一次 pytest)
+- [ ] 所有測試依然通過 (執行測試指令確認)
 - [ ] 如果重構：消除了明顯的程式碼重複
 - [ ] 如果重構：改善了變數和方法命名  
-- [ ] 如果重構：Public interface 保持不變
+- [ ] 如果重構：Public method signatures 保持不變
 - [ ] 準備好結束此輪 TDD cycle 或進入下一個 Red Phase
+
+### 🔧 建議測試執行指令（優先使用 wrapper）:
+```bash
+# Maven - 優先使用 wrapper
+./mvnw test              # 如果有 mvnw
+mvn test                 # fallback
+
+# Gradle - 優先使用 wrapper  
+./gradlew test           # 如果有 gradlew
+gradle test              # fallback
+```
 
 ## When to Stop Refactoring
 
